@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Shuttle Request Generator - Split View</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            background-color: #f8fafc;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .input-focus:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        #emailOutput::-webkit-scrollbar {
+            width: 6px;
+        }
+        #emailOutput::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        #emailOutput::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="antialiased text-slate-900">
+    <div class="min-h-screen flex flex-col">
+        <!-- 상단 헤더 -->
+        <header class="bg-white border-b border-slate-200 py-4 px-6 mb-6">
+            <div class="max-w-[1600px] mx-auto flex justify-between items-center">
+                <div>
+                    <h1 class="text-xl font-bold text-slate-800">Airport Shuttle Request Builder</h1>
+                    <p class="text-sm text-slate-500">호텔 공항 셔틀 요청 메일 자동 생성기</p>
+                </div>
+                <div class="hidden md:block text-right">
+                    <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-3 py-1 rounded-full uppercase">Professional Edition</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow px-6 pb-8">
+            <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 h-full">
+                
+                <!-- [왼쪽] 입력 섹션 -->
+                <div class="lg:col-span-5 xl:col-span-4 space-y-6">
+                    <section class="card p-6">
+                        <h2 class="text-lg font-bold mb-4 text-slate-800 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                            Reservation Details
+                        </h2>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Hotel Name</label>
+                                <input type="text" id="hotelName" value="Wyndham Grand Phu Quoc" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="Enter hotel name">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Confirmation Number</label>
+                                <input type="text" id="confNum" value="743216" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="Booking Reference">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Guest Name (English)</label>
+                                <input type="text" id="guestName" value="JUNG/WONA MS" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="Full name as per reservation">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Check-in Date</label>
+                                <input type="date" id="checkIn" value="2026-01-29" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus">
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="card p-6">
+                        <h2 class="text-lg font-bold mb-4 text-slate-800 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                            Flight & Arrival
+                        </h2>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Actual Arrival Date</label>
+                                <input type="date" id="arrivalDate" value="2026-01-29" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus">
+                                <p class="text-[10px] text-blue-600 mt-1 font-medium italic">* 항공기 도착일이 체크인 날짜와 다를 경우 수정하세요.</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Flight Number</label>
+                                    <input type="text" id="flightNum" value="LJ 091" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="e.g. KE123">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Arrival Time</label>
+                                    <input type="time" id="arrivalTime" value="21:00" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Your Name (Signature)</label>
+                                <input type="text" id="senderName" value="JUNG/WONA MS" placeholder="Your full name" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus">
+                                <p class="text-[10px] text-slate-400 mt-1 font-medium">* Guest Name 입력 시 자동으로 반영됩니다.</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- [오른쪽] 출력 및 프리뷰 섹션 -->
+                <div class="lg:col-span-7 xl:col-span-8 flex flex-col">
+                    <div class="card flex flex-col h-full overflow-hidden">
+                        <!-- 액션바 -->
+                        <div class="bg-slate-50 border-b border-slate-200 p-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <h2 class="text-sm font-bold text-slate-700 uppercase tracking-widest">Email Preview</h2>
+                            <div class="flex space-x-3 w-full sm:w-auto">
+                                <button onclick="copyToClipboard()" class="flex-1 sm:flex-none flex items-center justify-center bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-2 px-5 rounded-lg shadow-sm transition">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                    Copy Text
+                                </button>
+                                <button onclick="openMailClient()" class="flex-1 sm:flex-none flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg shadow-md transition">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                    Send Email
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 메일 내용 출력 영역 -->
+                        <div id="emailOutput" class="p-8 flex-grow overflow-y-auto bg-white font-mono text-slate-800 text-sm md:text-base leading-relaxed whitespace-pre-wrap">
+                            <!-- JS에 의해 실시간 생성됨 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 알림 토스트 -->
+        <div id="toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-8 py-3 rounded-full shadow-2xl hidden z-50 transition-all duration-300 opacity-0">
+            복사되었습니다.
+        </div>
+    </div>
+
+    <script>
+        const inputIds = ['hotelName', 'confNum', 'guestName', 'checkIn', 'arrivalDate', 'flightNum', 'arrivalTime', 'senderName'];
+        let isSignatureManuallyEdited = false;
+        
+        // 입력 시 실시간 업데이트
+        inputIds.forEach(id => {
+            const element = document.getElementById(id);
+            element.addEventListener('input', (e) => {
+                if (id === 'guestName' && !isSignatureManuallyEdited) {
+                    document.getElementById('senderName').value = e.target.value;
+                }
+                if (id === 'senderName') {
+                    isSignatureManuallyEdited = true;
+                }
+                generateEmail();
+            });
+        });
+
+        function generateEmail() {
+            const hotelName = document.getElementById('hotelName').value || '[Hotel Name]';
+            const confNum = document.getElementById('confNum').value || '[N/A]';
+            const guestName = document.getElementById('guestName').value || '[Guest Name]';
+            const checkIn = document.getElementById('checkIn').value;
+            const arrivalDate = document.getElementById('arrivalDate').value;
+            const flightNum = document.getElementById('flightNum').value || '[Flight Number]';
+            const arrivalTime = document.getElementById('arrivalTime').value || '[Arrival Time]';
+            const senderName = document.getElementById('senderName').value || guestName;
+
+            const subject = `Inquiry and Request for Complimentary Airport Shuttle - Confirmation #${confNum}`;
+            
+            const body = `Subject: ${subject}
+
+Dear Reservation Team at ${hotelName},
+
+I am writing to request the complimentary airport shuttle service for my upcoming stay. Please find my reservation and flight arrival details below:
+
+[ RESERVATION DETAILS ]
+- Hotel Name: ${hotelName}
+- Confirmation Number: ${confNum}
+- Guest Name: ${guestName}
+- Check-in Date: ${checkIn}
+
+[ FLIGHT ARRIVAL DETAILS ]
+- Flight Number: ${flightNum}
+- Actual Arrival Date: ${arrivalDate}
+- Estimated Arrival Time: ${arrivalTime}
+
+I understand that the hotel provides a complimentary shuttle service for guests. Could you please confirm if I can utilize this service for my arrival at ${arrivalTime} on ${arrivalDate}?
+
+Additionally, I would appreciate it if you could provide instructions regarding:
+1. The exact meeting point at the airport for the shuttle.
+2. The vehicle's identification (e.g., hotel sign, vehicle type, or color).
+3. A contact number for the shuttle coordinator, if available.
+
+I look forward to your professional confirmation.
+
+Sincerely,
+
+${senderName}`;
+
+            document.getElementById('emailOutput').innerText = body;
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('emailOutput').innerText;
+            if (!text) return;
+
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast();
+            } catch (err) {
+                console.error('Copy failed:', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function openMailClient() {
+            const confNum = document.getElementById('confNum').value;
+            const body = document.getElementById('emailOutput').innerText;
+            const hotelName = document.getElementById('hotelName').value;
+            if (!body) return;
+            
+            const subject = `Shuttle Request: ${hotelName} (Ref: ${confNum})`;
+            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.style.opacity = '1';
+            }, 10);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 300);
+            }, 3000);
+        }
+
+        window.onload = generateEmail;
+    </script>
+</body>
+</html>
