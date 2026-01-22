@@ -74,7 +74,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Check-in Date</label>
-                                <input type="date" id="checkIn" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus">
+                                <input type="text" id="checkIn" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="yyyy-mm-dd or yyyymmdd">
                             </div>
                         </div>
                     </section>
@@ -87,8 +87,8 @@
                         <div class="grid grid-cols-1 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Actual Arrival Date</label>
-                                <input type="date" id="arrivalDate" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus">
-                                <p class="text-[10px] text-blue-600 mt-1 font-medium italic">* 항공기 도착일이 체크인 날짜와 다를 경우 실제 도착 날짜를 선택하세요.</p>
+                                <input type="text" id="arrivalDate" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="yyyy-mm-dd or yyyymmdd">
+                                <p class="text-[10px] text-blue-600 mt-1 font-medium italic">* 항공기 도착일이 체크인 날짜와 다를 경우 실제 도착 날짜를 입력하세요.</p>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
@@ -97,7 +97,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Arrival Time</label>
-                                    <input type="time" id="arrivalTime" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus">
+                                    <input type="text" id="arrivalTime" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="hh:mm or hhmm">
                                 </div>
                             </div>
                             <div>
@@ -154,7 +154,6 @@
                     document.getElementById('senderName').value = e.target.value;
                 }
                 if (id === 'senderName') {
-                    // 서명란을 직접 입력한 경우 자동 동기화 중단
                     isSignatureManuallyEdited = (e.target.value !== "");
                     if (e.target.value === "") isSignatureManuallyEdited = false;
                 }
@@ -162,14 +161,42 @@
             });
         });
 
+        // 날짜 형식 정리 (yyyy-mm-dd)
+        function formatInputDate(val) {
+            if (!val) return '[Date]';
+            const clean = val.replace(/\D/g, '');
+            if (clean.length === 8) {
+                return `${clean.slice(0, 4)}-${clean.slice(4, 6)}-${clean.slice(6, 8)}`;
+            }
+            return val;
+        }
+
+        // 시간 형식 정리 (hh:mm)
+        function formatInputTime(val) {
+            if (!val) return '[Time]';
+            const clean = val.replace(/\D/g, '');
+            if (clean.length === 4) {
+                return `${clean.slice(0, 2)}:${clean.slice(2, 4)}`;
+            }
+            return val;
+        }
+
         function generateEmail() {
             const hotelName = document.getElementById('hotelName').value || '[Hotel Name]';
             const confNum = document.getElementById('confNum').value || '[Confirmation Number]';
             const guestName = document.getElementById('guestName').value || '[Guest Name]';
-            const checkIn = document.getElementById('checkIn').value || '[Check-in Date]';
-            const arrivalDate = document.getElementById('arrivalDate').value || '[Arrival Date]';
+            
+            // 유동적 포맷팅 적용
+            const rawCheckIn = document.getElementById('checkIn').value;
+            const checkIn = formatInputDate(rawCheckIn);
+            
+            const rawArrivalDate = document.getElementById('arrivalDate').value;
+            const arrivalDate = formatInputDate(rawArrivalDate);
+            
+            const rawArrivalTime = document.getElementById('arrivalTime').value;
+            const arrivalTime = formatInputTime(rawArrivalTime);
+
             const flightNum = document.getElementById('flightNum').value || '[Flight Number]';
-            const arrivalTime = document.getElementById('arrivalTime').value || '[Arrival Time]';
             const senderName = document.getElementById('senderName').value || guestName;
 
             const subject = `Inquiry and Request for Complimentary Airport Shuttle - Confirmation #${confNum}`;
@@ -192,6 +219,11 @@ I am writing to request the complimentary airport shuttle service for my upcomin
 - Estimated Arrival Time: ${arrivalTime}
 
 I understand that the hotel provides a complimentary shuttle service for guests. Could you please confirm if I can utilize this service for my arrival at ${arrivalTime} on ${arrivalDate}?
+
+Additionally, I would appreciate it if you could provide instructions regarding:
+1. The exact meeting point at the airport for the shuttle.
+2. The vehicle's identification (e.g., hotel sign, vehicle type, or color).
+3. A contact number for the shuttle coordinator, if available.
 
 I look forward to your professional confirmation.
 
@@ -244,7 +276,6 @@ ${senderName}`;
             }, 3000);
         }
 
-        // 초기 상태 로드
         window.onload = generateEmail;
     </script>
 </body>
