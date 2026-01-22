@@ -62,19 +62,19 @@
                         <div class="grid grid-cols-1 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Hotel Name</label>
-                                <input type="text" id="hotelName" value="Wyndham Grand Phu Quoc" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="Enter hotel name">
+                                <input type="text" id="hotelName" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="e.g. Wyndham Grand Phu Quoc">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Confirmation Number</label>
-                                <input type="text" id="confNum" value="743216" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="Booking Reference">
+                                <input type="text" id="confNum" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="e.g. 743216">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Guest Name (English)</label>
-                                <input type="text" id="guestName" value="JUNG/WONA MS" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="Full name as per reservation">
+                                <input type="text" id="guestName" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="e.g. JUNG/WONA MS">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Check-in Date</label>
-                                <input type="date" id="checkIn" value="2026-01-29" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus">
+                                <input type="date" id="checkIn" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus">
                             </div>
                         </div>
                     </section>
@@ -87,22 +87,22 @@
                         <div class="grid grid-cols-1 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Actual Arrival Date</label>
-                                <input type="date" id="arrivalDate" value="2026-01-29" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus">
-                                <p class="text-[10px] text-blue-600 mt-1 font-medium italic">* 항공기 도착일이 체크인 날짜와 다를 경우 수정하세요.</p>
+                                <input type="date" id="arrivalDate" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus">
+                                <p class="text-[10px] text-blue-600 mt-1 font-medium italic">* 항공기 도착일이 체크인 날짜와 다를 경우 실제 도착 날짜를 선택하세요.</p>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Flight Number</label>
-                                    <input type="text" id="flightNum" value="LJ 091" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="e.g. KE123">
+                                    <input type="text" id="flightNum" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="e.g. LJ 091">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Arrival Time</label>
-                                    <input type="time" id="arrivalTime" value="21:00" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus">
+                                    <input type="time" id="arrivalTime" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter mb-1">Your Name (Signature)</label>
-                                <input type="text" id="senderName" value="JUNG/WONA MS" placeholder="Your full name" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus">
+                                <input type="text" id="senderName" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm input-focus" placeholder="Auto-synced with Guest Name">
                                 <p class="text-[10px] text-slate-400 mt-1 font-medium">* Guest Name 입력 시 자동으로 반영됩니다.</p>
                             </div>
                         </div>
@@ -154,7 +154,9 @@
                     document.getElementById('senderName').value = e.target.value;
                 }
                 if (id === 'senderName') {
-                    isSignatureManuallyEdited = true;
+                    // 서명란을 직접 입력한 경우 자동 동기화 중단
+                    isSignatureManuallyEdited = (e.target.value !== "");
+                    if (e.target.value === "") isSignatureManuallyEdited = false;
                 }
                 generateEmail();
             });
@@ -162,10 +164,10 @@
 
         function generateEmail() {
             const hotelName = document.getElementById('hotelName').value || '[Hotel Name]';
-            const confNum = document.getElementById('confNum').value || '[N/A]';
+            const confNum = document.getElementById('confNum').value || '[Confirmation Number]';
             const guestName = document.getElementById('guestName').value || '[Guest Name]';
-            const checkIn = document.getElementById('checkIn').value;
-            const arrivalDate = document.getElementById('arrivalDate').value;
+            const checkIn = document.getElementById('checkIn').value || '[Check-in Date]';
+            const arrivalDate = document.getElementById('arrivalDate').value || '[Arrival Date]';
             const flightNum = document.getElementById('flightNum').value || '[Flight Number]';
             const arrivalTime = document.getElementById('arrivalTime').value || '[Arrival Time]';
             const senderName = document.getElementById('senderName').value || guestName;
@@ -247,6 +249,7 @@ ${senderName}`;
             }, 3000);
         }
 
+        // 초기 상태 로드
         window.onload = generateEmail;
     </script>
 </body>
